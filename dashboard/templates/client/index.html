@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRAVAAH ERP – Shared Services Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+<style>
+  :root {
+    --black:     #0a0a0a;
+    --white:     #f5f5f0;
+    --orange:    #ff5c1a;
+    --orange2:   #ff7a3d;
+    --navy:      #0f1e45;
+    --grid:      rgba(0,0,0,0.06);
+    --sidebar-w: 240px;
+    --top-h:     64px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    min-height: 100vh;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--top-h);
+    background: var(--white);
+    border-bottom: 2px solid var(--black);
+    display: flex; align-items: stretch;
+    z-index: 300;
+  }
+  .topbar-brand {
+    width: var(--sidebar-w);
+    background: var(--black);
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 1.4rem;
+    text-decoration: none; flex-shrink: 0;
+    border-right: 2px solid var(--orange);
+  }
+  .brand-logo {
+    width: 36px; height: 36px;
+    background: var(--orange);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: #fff; font-weight: 900;
+  }
+  .brand-wordmark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem; letter-spacing: 3px;
+    color: #fff; line-height: 1;
+  }
+  .brand-wordmark span { color: var(--orange); }
+
+  .topbar-nav {
+    display: flex; align-items: stretch;
+    list-style: none; padding: 0; margin: 0; flex: 1;
+  }
+  .topbar-nav > li { display: flex; align-items: stretch; position: relative; }
+  .topbar-nav > li > a,
+  .topbar-nav > li > button {
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 20px;
+    font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--black); text-decoration: none;
+    border: none; background: none;
+    border-right: 1px solid rgba(0,0,0,0.1);
+    transition: all 0.15s; cursor: pointer;
+    font-family: 'Inter', sans-serif; white-space: nowrap;
+  }
+  .topbar-nav > li > a:hover,
+  .topbar-nav > li > button:hover { background: var(--orange); color: #fff; }
+  .nav-arrow {
+    width: 22px; height: 22px;
+    background: var(--orange);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 0.7rem; flex-shrink: 0;
+  }
+  .topbar-nav > li > a:hover .nav-arrow,
+  .topbar-nav > li > button:hover .nav-arrow { background: #fff; color: var(--orange); }
+
+  .nav-drop {
+    position: absolute; top: 100%; left: 0;
+    min-width: 200px; background: var(--black);
+    border: 2px solid var(--orange); border-top: none;
+    z-index: 999; display: none;
+  }
+  .topbar-nav > li:hover .nav-drop { display: block; }
+  .nav-drop a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px; color: rgba(255,255,255,0.75);
+    text-decoration: none; font-size: 0.8rem; font-weight: 600;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    transition: all 0.15s;
+  }
+  .nav-drop a:last-child { border-bottom: none; }
+  .nav-drop a:hover { background: var(--orange); color: #fff; padding-left: 20px; }
+  .nav-drop a i { width: 16px; text-align: center; }
+
+  .topbar-right {
+    display: flex; align-items: stretch;
+    margin-left: auto;
+    border-left: 1px solid rgba(0,0,0,0.1);
+  }
+  .topbar-right > a {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 18px;
+    font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--black); text-decoration: none;
+    border: none; background: none;
+    border-left: 1px solid rgba(0,0,0,0.1);
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .topbar-right > a:hover { background: var(--orange); color: #fff; }
+  .user-initials {
+    width: 28px; height: 28px; background: var(--orange);
+    color: #fff; font-size: 0.78rem; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-logout-top { background: var(--orange) !important; color: #fff !important; }
+  .btn-logout-top:hover { background: #d94400 !important; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed; top: var(--top-h); left: 0;
+    width: var(--sidebar-w);
+    height: calc(100vh - var(--top-h));
+    background: var(--black);
+    overflow-y: auto; overflow-x: hidden;
+    z-index: 200;
+    border-right: 2px solid rgba(255,255,255,0.08);
+  }
+  .sidebar::-webkit-scrollbar { width: 3px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--orange); }
+
+  .sb-section { padding: 1.2rem 0 0; }
+  .sb-label {
+    font-size: 0.6rem; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    padding: 0 1.2rem; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sb-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+  .sb-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 1.2rem;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    font-size: 0.8rem; font-weight: 600;
+    letter-spacing: 0.3px; transition: all 0.15s;
+    cursor: pointer; border: none; background: none;
+    width: 100%; text-align: left;
+    font-family: 'Inter', sans-serif; text-transform: uppercase;
+    position: relative;
+  }
+  .sb-item i { width: 16px; text-align: center; font-size: 0.82rem; flex-shrink: 0; }
+  .sb-item:hover { color: #fff; background: rgba(255,255,255,0.05); padding-left: 1.5rem; }
+  .sb-item.active { color: var(--orange); background: rgba(255,92,26,0.1); border-left: 3px solid var(--orange); }
+  .sb-item.active i { color: var(--orange); }
+
+  .sb-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 8px 0; }
+
+  /* ── PAGE WRAP ── */
+  .page-wrap {
+    margin-left: var(--sidebar-w);
+    margin-top: var(--top-h);
+    min-height: calc(100vh - var(--top-h));
+    display: flex; flex-direction: column;
+  }
+  .page-body {
+    flex: 1; padding: 2rem 2.4rem;
+    animation: fadeUp 0.25s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* Page header */
+  .pg-header {
+    margin-bottom: 2rem;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex-wrap: wrap; gap: 1.5rem;
+    border-bottom: 2px solid var(--black);
+    padding-bottom: 1.2rem;
+  }
+  .pg-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem; line-height: 1;
+    letter-spacing: 2px; color: var(--black);
+  }
+  .pg-title .accent { color: var(--orange); }
+  .pg-sub {
+    font-size: 0.82rem; font-weight: 500;
+    color: #666; margin-top: 4px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* ── DURATION DROPDOWN (brutalist) ── */
+  .duration-dropdown-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid var(--black);
+    background: #fff;
+    padding: 0 12px;
+    position: relative;
+    height: 48px;
+    box-shadow: 4px 4px 0px var(--black);
+    transition: all 0.1s;
+  }
+  .duration-dropdown-container:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0px var(--black);
+  }
+  .duration-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(0,0,0,0.5);
+  }
+  .duration-select {
+    border: none;
+    background: transparent;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--black);
+    outline: none;
+    padding: 8px 24px 8px 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .duration-dropdown-container i {
+    position: absolute;
+    right: 14px;
+    pointer-events: none;
+    font-size: 0.7rem;
+    color: var(--black);
+  }
+
+  /* ── STAT CARDS (brutalist) ── */
+  .stat-card {
+    background: #fff;
+    border: 2px solid var(--black);
+    padding: 1.5rem;
+    position: relative; transition: all 0.15s;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute; bottom: -5px; right: -5px;
+    width: 100%; height: 100%;
+    background: var(--orange); z-index: -1; transition: all 0.15s;
+  }
+  .stat-card:hover { transform: translate(-2px,-2px); }
+  .stat-card .sc-icon { font-size: 1.4rem; color: var(--orange); margin-bottom: 1rem; }
+  .stat-card .sc-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem; line-height: 1; color: var(--black); letter-spacing: 1px;
+    transition: all 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  }
+  .stat-card .sc-label {
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px; color: #888; margin-top: 6px;
+  }
+  .stat-card.s-orange { background: var(--orange); border-color: var(--orange); }
+  .stat-card.s-orange::after { background: var(--black); }
+  .stat-card.s-orange .sc-num,
+  .stat-card.s-orange .sc-label,
+  .stat-card.s-orange .sc-icon { color: #fff; }
+  .stat-card.s-black { background: var(--black); border-color: var(--black); }
+  .stat-card.s-black::after { background: var(--orange); }
+  .stat-card.s-black .sc-num { color: #fff; }
+  .stat-card.s-black .sc-label { color: rgba(255,255,255,0.5); }
+  .stat-card.s-black .sc-icon { color: var(--orange); }
+
+  /* Value change pulsing keyframes */
+  @keyframes statPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); color: var(--orange); }
+    100% { transform: scale(1); }
+  }
+  .pulse-active {
+    animation: statPulse 0.4s ease-out;
+  }
+
+  /* ── SECTION LABEL ── */
+  .sec-label {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 1.4rem; margin-top: 2.5rem;
+  }
+  .sec-label-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem; letter-spacing: 3px; color: var(--black);
+    white-space: nowrap;
+  }
+  .sec-label-line { flex: 1; height: 2px; background: var(--black); }
+  .sec-label-dot {
+    width: 10px; height: 10px; background: var(--orange); flex-shrink: 0;
+  }
+
+  /* ── CHART CARD (brutalist) ── */
+  .chart-card {
+    background: #fff;
+    border: 2px solid var(--black);
+    position: relative; transition: all 0.15s;
+  }
+  .chart-card::after {
+    content: '';
+    position: absolute; bottom: -5px; right: -5px;
+    width: 100%; height: 100%;
+    background: var(--black); z-index: -1; transition: all 0.15s;
+  }
+  .chart-card:hover { transform: translate(-2px,-2px); }
+  .chart-card:hover::after { background: var(--orange); }
+
+  .chart-head {
+    background: var(--black);
+    padding: 12px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .chart-head-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem; letter-spacing: 2px; color: #fff;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chart-head-title i { color: var(--orange); }
+  .chart-head-badge {
+    font-size: 0.65rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 3px 10px; border: 1.5px solid var(--orange);
+    color: var(--orange);
+  }
+  .chart-body { padding: 20px; }
+  .chart-wrap { position: relative; }
+
+  /* ── PRAVAAH CARD ── */
+  .pravaah-card {
+    background: #fff;
+    border: 2px solid var(--black);
+    padding: 24px;
+    box-shadow: 6px 6px 0px #bdbdbd;
+    transition: .25s; position: relative;
+  }
+  .pravaah-card:hover { transform: translateY(-4px); box-shadow: 6px 10px 0px #bdbdbd; }
+  .pravaah-icon {
+    width: 52px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--black); background: var(--white);
+    border: 2px solid var(--black); font-size: 1.3rem;
+  }
+  .pravaah-btn {
+    background: var(--orange); color: #fff;
+    border: 2px solid var(--orange);
+    font-size: 0.75rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 10px 18px; text-decoration: none;
+    display: inline-block; transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .pravaah-btn:hover { background: #d94400; border-color: #d94400; color: #fff; }
+  .pravaah-card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem; letter-spacing: 1.5px; color: var(--black);
+    margin: 12px 0 6px;
+  }
+
+  .bdg {
+    display: inline-flex; align-items: center;
+    padding: 3px 10px; font-size: 0.65rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1px; border: 1.5px solid;
+  }
+  .bdg-green  { border-color: #22c55e; color: #15803d; background: #f0fdf4; }
+  .bdg-orange { border-color: var(--orange); color: var(--orange); background: #fff5f0; }
+  .bdg-navy   { border-color: var(--navy); color: var(--navy); background: #f0f4ff; }
+  .bdg-black  { border-color: var(--black); color: var(--black); background: transparent; }
+  .bdg-red    { border-color: #dc2626; color: #dc2626; background: #fef2f2; }
+
+  /* ── TABLE ── */
+  .p-table-wrap { border: 2px solid var(--black); overflow: hidden; }
+  .p-table { width: 100%; border-collapse: collapse; background: #fff; }
+  .p-table thead tr { background: var(--black); }
+  .p-table thead th {
+    color: rgba(255,255,255,0.8); font-size: 0.68rem;
+    font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+    padding: 13px 18px; border: none; text-align: left;
+  }
+  .p-table tbody tr { border-bottom: 1px solid rgba(0,0,0,0.08); transition: background 0.15s; }
+  .p-table tbody tr:hover { background: #fff5f0; }
+  .p-table tbody td { padding: 12px 18px; font-size: 0.86rem; }
+
+  /* ── ACTIVITY ITEMS ── */
+  .activity-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.07);
+  }
+  .activity-row:last-child { border-bottom: none; }
+  .activity-icon-box {
+    width: 36px; height: 36px; flex-shrink: 0;
+    border: 2px solid var(--black);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+  }
+  .activity-text { font-size: 0.83rem; font-weight: 600; }
+  .activity-time { font-size: 0.72rem; color: #999; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── FILE STORAGE CARD ── */
+  .storage-card {
+    background: #fff;
+    border: 2px solid var(--black);
+    padding: 24px;
+    box-shadow: 6px 6px 0px #bdbdbd;
+    transition: .25s; position: relative;
+  }
+  .storage-card:hover { transform: translateY(-4px); box-shadow: 6px 10px 0px #bdbdbd; }
+  .storage-bar-wrap {
+    background: rgba(0,0,0,0.07); height: 12px;
+    border: 1.5px solid var(--black);
+    margin: 14px 0 8px; position: relative;
+  }
+  .storage-bar-fill {
+    height: 100%; background: var(--orange);
+    transition: width 0.8s ease;
+  }
+  .storage-stat {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.07);
+    font-size: 0.82rem; font-weight: 600;
+  }
+  .storage-stat:last-of-type { border-bottom: none; }
+  .storage-stat i { color: var(--orange); width: 16px; }
+  .storage-stat-val { margin-left: auto; font-weight: 800; font-size: 0.82rem; }
+  .storage-btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .btn-outline-brutal {
+    background: transparent; color: var(--black);
+    border: 2px solid var(--black);
+    font-size: 0.72rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 9px 16px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.15s; font-family: 'Inter', sans-serif; cursor: pointer;
+  }
+  .btn-outline-brutal:hover { background: var(--black); color: #fff; }
+
+  /* ── FOOTER ── */
+  .p-footer {
+    background: var(--black);
+    border-top: 3px solid var(--orange);
+    padding: 1.2rem 2.4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 10px;
+    margin-top: 2.5rem;
+  }
+  .p-footer .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: #fff; }
+  .p-footer .footer-brand span { color: var(--orange); }
+  .p-footer .footer-links a {
+    color: rgba(255,255,255,0.4); text-decoration: none;
+    font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-left: 1.2rem; transition: color 0.15s;
+  }
+  .p-footer .footer-links a:hover { color: var(--orange); }
+
+  @media (max-width: 991px) {
+    .sidebar { transform: translateX(-100%); transition: transform 0.25s ease-out; }
+    .sidebar.mobile-show { transform: translateX(0); }
+    .page-wrap { margin-left: 0; }
+    .topbar-nav { display: none; }
+    .page-body { padding: 1.2rem; }
+
+    .menu-toggle-btn {
+      display: flex !important;
+    }
+  }
+
+  .menu-toggle-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: var(--black);
+    color: #fff;
+    border: none;
+    width: 50px;
+    border-right: 1px solid rgba(255,255,255,0.15);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  .menu-toggle-btn:hover {
+    background: var(--orange);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ TOPBAR ═══════════ -->
+<header class="topbar">
+  <button class="menu-toggle-btn" id="sidebarToggle" aria-label="Toggle Sidebar">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+  <a href="#" class="topbar-brand">
+    <div class="brand-logo"><i class="fa-solid fa-layer-group"></i></div>
+    <div class="brand-wordmark">PRAVA<span>AH</span></div>
+  </a>
+  <ul class="topbar-nav">
+    <li><a href="#">Dashboard <span class="nav-arrow"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem"></i></span></a></li>
+    <li>
+      <button>Shared Svc <span class="nav-arrow"><i class="fa-solid fa-chevron-down" style="font-size:0.6rem"></i></span></button>
+      <div class="nav-drop">
+        <a href="#"><i class="fa-solid fa-bell"></i> Notifications</a>
+        <a href="#"><i class="fa-solid fa-chart-bar"></i> Reports Hub</a>
+      </div>
+    </li>
+    <li><a href="#">Students <span class="nav-arrow"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem"></i></span></a></li>
+    <li><a href="#">Trainers <span class="nav-arrow"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem"></i></span></a></li>
+    <li><a href="#">Courses <span class="nav-arrow"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem"></i></span></a></li>
+    <li><a href="#">Reports <span class="nav-arrow"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem"></i></span></a></li>
+  </ul>
+  <div class="topbar-right">
+    <a href="#"><div class="user-initials">A</div> Admin</a>
+    <a href="#" class="btn-logout-top"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+  </div>
+</header>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sidebar" id="mainSidebar">
+  <div class="sb-section">
+    <div class="sb-label">Overview</div>
+    <a href="#" class="sb-item active"><i class="fa-solid fa-house"></i> Dashboard</a>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Shared Services</div>
+    <a href="#" class="sb-item"><i class="fa-solid fa-bell"></i> Notifications</a>
+    <a href="#" class="sb-item"><i class="fa-solid fa-chart-column"></i> Reports Hub</a>
+    <a href="#" class="sb-item"><i class="fa-solid fa-clipboard-list"></i> Audit Logs</a>
+    <a href="#" class="sb-item"><i class="fa-solid fa-folder-open"></i> File Storage</a>
+  </div>
+
+  <hr class="sb-divider">
+
+  <div class="sb-section">
+    <div class="sb-label">Modules</div>
+    <a href="#" class="sb-item"><i class="fa-solid fa-user-graduate"></i> Students</a>
+    <a href="#" class="sb-item"><i class="fa-solid fa-chalkboard-user"></i> Trainers</a>
+    <a href="#" class="sb-item"><i class="fa-solid fa-book-open"></i> Courses</a>
+    <a href="#" class="sb-item"><i class="fa-solid fa-building"></i> Hostel</a>
+  </div>
+
+  <hr class="sb-divider">
+
+  <div class="sb-section">
+    <div class="sb-label">Analytics</div>
+    <a href="#" class="sb-item"><i class="fa-solid fa-chart-line"></i> Activity</a>
+    <a href="#" class="sb-item"><i class="fa-solid fa-chart-bar"></i> Reports</a>
+    <a href="#" class="sb-item"><i class="fa-solid fa-sliders"></i> Settings</a>
+  </div>
+</aside>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<div class="page-wrap">
+<div class="page-body">
+
+  <!-- Page Header -->
+  <div class="pg-header">
+    <div>
+      <div class="pg-title">SHARED <span class="accent">SERVICES</span></div>
+      <div class="pg-sub">Central Hub · Notifications · Reports Hub · Active Performance Records</div>
+    </div>
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+      
+      <!-- Duration Dropdown Select -->
+      <div class="duration-dropdown-container">
+        <span class="duration-label">Range:</span>
+        <select id="durationSelect" class="duration-select">
+          <option value="monthly" selected>Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="financial_year">Financial Year</option>
+        </select>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+
+      <a href="#" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;height:48px;font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;background:var(--orange);color:#fff;text-decoration:none;border:2px solid var(--orange);font-family:Inter,sans-serif;transition:all .15s;box-shadow: 4px 4px 0px var(--black);" onmouseover="this.style.background='#d94400'; this.style.transform='translate(-1px, -1px)';" onmouseout="this.style.background='var(--orange)'; this.style.transform='none';">
+        <i class="fa-solid fa-bell"></i> Send Notification
+      </a>
+      <a href="#" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;height:48px;font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;background:transparent;color:var(--black);text-decoration:none;border:2px solid var(--black);font-family:Inter,sans-serif;transition:all .15s;box-shadow: 4px 4px 0px var(--black);" onmouseover="this.style.background='var(--black)';this.style.color='#fff'; this.style.transform='translate(-1px, -1px)';" onmouseout="this.style.background='transparent';this.style.color='var(--black)'; this.style.transform='none';">
+        <i class="fa-solid fa-file-export"></i> Export Report
+      </a>
+    </div>
+  </div>
+
+  <!-- ══ KPI CARDS SECTION ══ -->
+  <div class="sec-label">
+    <div class="sec-label-dot"></div>
+    <div class="sec-label-text">Programme Overview</div>
+    <div class="sec-label-line"></div>
+  </div>
+
+  <!-- Row 1: Students, Master Trainers, Active Trainees, Active Master Trainers, Total Clients -->
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3 col-xl">
+      <div class="stat-card s-black">
+        <div class="sc-icon"><i class="fa-solid fa-user-graduate"></i></div>
+        <div class="sc-num" id="stat-total-students">4,820</div>
+        <div class="sc-label">Total Students</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-xl">
+      <div class="stat-card s-orange">
+        <div class="sc-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+        <div class="sc-num" id="stat-master-trainers">128</div>
+        <div class="sc-label">Master Trainers</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-xl">
+      <div class="stat-card">
+        <div class="sc-icon"><i class="fa-solid fa-person-chalkboard"></i></div>
+        <div class="sc-num" id="stat-active-trainees">2,310</div>
+        <div class="sc-label">Active Trainees</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-xl">
+      <div class="stat-card s-black">
+        <div class="sc-icon"><i class="fa-solid fa-user-tie"></i></div>
+        <div class="sc-num" id="stat-active-master-trainers">94</div>
+        <div class="sc-label">Active Master Trainers</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-xl">
+    <div class="stat-card s-orange"
+         onclick="window.location.href='{% url 'client_list' %}'"
+         style="cursor:pointer;">
+
+        <div class="sc-icon">
+            <i class="fa-solid fa-building-user"></i>
+        </div>
+
+        <div class="sc-num" id="stat-total-clients">
+            {{ total_clients }}
+        </div>
+
+        <div class="sc-label">Total Clients</div>
+
+    </div>
+</div>
+
+  <!-- Row 2: Courses, Rooms, Certificates, Notifications -->
+  <div class="row g-4 mb-2">
+    <div class="col-6 col-md-3">
+      <div class="stat-card">
+        <div class="sc-icon"><i class="fa-solid fa-book-open"></i></div>
+        <div class="sc-num" id="stat-courses-offered">56</div>
+        <div class="sc-label">Courses Offered</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card s-black">
+        <div class="sc-icon"><i class="fa-solid fa-bed"></i></div>
+        <div class="sc-num" id="stat-occupied-rooms">340</div>
+        <div class="sc-label">Occupied Rooms</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card s-orange">
+        <div class="sc-icon"><i class="fa-solid fa-certificate"></i></div>
+        <div class="sc-num" id="stat-certificates-issued">1,640</div>
+        <div class="sc-label">Certificates Issued</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card">
+        <div class="sc-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+        <div class="sc-num" id="stat-notifications">3,250</div>
+        <div class="sc-label">Notifications</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       ANALYTICS & INSIGHTS
+  ══════════════════════════════════════════ -->
+  <div class="sec-label">
+    <div class="sec-label-dot"></div>
+    <div class="sec-label-text">Analytics &amp; Insights</div>
+    <div class="sec-label-line"></div>
+  </div>
+
+  <!-- Row 1: Bar (6) + Area (6) -->
+  <div class="row g-4 mb-4">
+    <!-- B) Bar Chart: Module Usage -->
+    <div class="col-lg-6">
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-head-title">
+            <i class="fa-solid fa-chart-column"></i> Module Usage Statistics
+          </div>
+          <span class="chart-head-badge">Score / 100</span>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap" style="height:260px">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D) Area Chart: Workflow Execution Trend -->
+    <div class="col-lg-6">
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-head-title">
+            <i class="fa-solid fa-wave-square"></i> Workflow Execution Trend
+          </div>
+          <span class="chart-head-badge" id="workflowTrendBadge">Weekly</span>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap" style="height:260px">
+            <canvas id="areaChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Training Impact (8) + Participants by Program Pie (4) -->
+  <div class="row g-4 mb-2">
+    <!-- E) Bar Chart: Training Impact -->
+    <div class="col-lg-8">
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-head-title">
+            <i class="fa-solid fa-bolt"></i> Training Impact
+          </div>
+          <span class="chart-head-badge">Duration × Participants</span>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap" style="height:280px">
+            <canvas id="trainingImpactChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- F) Doughnut: Participants by Program -->
+    <div class="col-lg-4">
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-head-title">
+            <i class="fa-solid fa-users"></i> Participants by Program
+          </div>
+          <span class="chart-head-badge">Live</span>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap" style="height:280px">
+            <canvas id="programPieChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ QUICK ACTIONS ══ -->
+  <div class="sec-label">
+    <div class="sec-label-dot"></div>
+    <div class="sec-label-text">Quick Actions</div>
+    <div class="sec-label-line"></div>
+  </div>
+
+  <div class="row g-4 mb-2">
+    <div class="col-md-6">
+      <div class="pravaah-card h-100">
+        <div class="pravaah-icon"><i class="fa-solid fa-bell"></i></div>
+        <div class="pravaah-card-title">Notification Center</div>
+        <p class="text-muted small mb-4" style="font-size:0.8rem;">Send announcements and alerts to all users.</p>
+        <a href="#" class="pravaah-btn w-100 text-center">Open Center</a>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="pravaah-card h-100">
+        <div class="pravaah-icon"><i class="fa-solid fa-chart-bar"></i></div>
+        <div class="pravaah-card-title">Reports Hub</div>
+        <p class="text-muted small mb-4" style="font-size:0.8rem;">Generate and schedule system-wide reports.</p>
+        <a href="#" class="pravaah-btn w-100 text-center">Generate Reports</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FILE STORAGE SERVICE ══ -->
+  <div class="sec-label">
+    <div class="sec-label-dot"></div>
+    <div class="sec-label-text">File Storage Service</div>
+    <div class="sec-label-line"></div>
+  </div>
+
+  <div class="row g-4 mb-2">
+    <div class="col-lg-5">
+      <div class="storage-card h-100">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px;">
+          <div style="width:52px;height:52px;background:var(--black);display:flex;align-items:center;justify-content:center;color:var(--orange);font-size:1.4rem;flex-shrink:0;">
+            <i class="fa-solid fa-hard-drive"></i>
+          </div>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--black);line-height:1;">Storage Usage</div>
+            <div style="font-size:0.72rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1.5px;" id="storage-detail-text">1.84 TB of 3 TB used</div>
+          </div>
+          <span class="bdg bdg-orange" style="margin-left:auto;" id="storage-percentage-badge">61%</span>
+        </div>
+        <div class="storage-bar-wrap">
+          <div class="storage-bar-fill" style="width:61%" id="storage-bar-fill-elem"></div>
+        </div>
+        <div class="storage-stat"><i class="fa-solid fa-file-pdf"></i><span>Documents & Reports</span><span class="storage-stat-val" id="storage-docs-val">620 GB</span></div>
+        <div class="storage-stat"><i class="fa-solid fa-photo-film"></i><span>Media & Recordings</span><span class="storage-stat-val" id="storage-media-val">840 GB</span></div>
+        <div class="storage-stat"><i class="fa-solid fa-file-zipper"></i><span>Backups & Archives</span><span class="storage-stat-val" id="storage-backups-val">380 GB</span></div>
+        <div class="storage-stat"><i class="fa-solid fa-database"></i><span>Free Space</span><span class="storage-stat-val" style="color:#15803d;" id="storage-free-val">1.16 TB</span></div>
+        <div class="storage-btn-row">
+          <a href="#" class="pravaah-btn" style="flex:1;text-align:center;"><i class="fa-solid fa-folder-open me-2"></i>Browse Files</a>
+          <a href="#" class="btn-outline-brutal"><i class="fa-solid fa-upload"></i> Upload</a>
+          <a href="#" class="btn-outline-brutal"><i class="fa-solid fa-gear"></i> Manage</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="storage-card h-100">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--black);margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+          <i class="fa-solid fa-clock-rotate-left" style="color:var(--orange);font-size:1rem;"></i> Recent Files
+        </div>
+        <div class="p-table-wrap" style="border:none;">
+          <table class="p-table">
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Uploaded</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><i class="fa-solid fa-file-pdf me-2" style="color:#dc2626;"></i>Q2_Batch_Report.pdf</td>
+                <td><span class="bdg bdg-red">PDF</span></td>
+                <td>4.2 MB</td>
+                <td>Today, 09:14</td>
+                <td><a href="#" style="color:var(--orange);font-weight:700;font-size:0.78rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Download</a></td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-file-excel me-2" style="color:#15803d;"></i>Student_Roster_Jun26.xlsx</td>
+                <td><span class="bdg bdg-green">Excel</span></td>
+                <td>1.8 MB</td>
+                <td>Today, 08:30</td>
+                <td><a href="#" style="color:var(--orange);font-weight:700;font-size:0.78rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Download</a></td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-file-video me-2" style="color:var(--navy);"></i>Training_Module_12.mp4</td>
+                <td><span class="bdg bdg-navy">Video</span></td>
+                <td>230 MB</td>
+                <td>Yesterday</td>
+                <td><a href="#" style="color:var(--orange);font-weight:700;font-size:0.78rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Download</a></td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-file-zipper me-2" style="color:#888;"></i>DB_Backup_030626.zip</td>
+                <td><span class="bdg bdg-black">ZIP</span></td>
+                <td>512 MB</td>
+                <td>03 Jun 2026</td>
+                <td><a href="#" style="color:var(--orange);font-weight:700;font-size:0.78rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Download</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AUDIT & LOGGING ══ -->
+  <div class="sec-label">
+    <div class="sec-label-dot"></div>
+    <div class="sec-label-text">Audit &amp; Logging</div>
+    <div class="sec-label-line"></div>
+  </div>
+
+  <div class="chart-card mb-4">
+    <div class="chart-head">
+      <div class="chart-head-title">
+        <i class="fa-solid fa-clipboard-list"></i> Audit Log — Recent Events
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="chart-head-badge">Live</span>
+        <a href="#" style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 12px;border:1.5px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)';this.style.color='rgba(255,255,255,0.7)'">Export Logs</a>
+      </div>
+    </div>
+    <div class="chart-body" style="padding:0;">
+      <div class="p-table-wrap" style="border:none;">
+        <table class="p-table">
+          <thead>
+            <tr>
+              <th style="width:160px;">Timestamp</th>
+              <th>User</th>
+              <th>Role</th>
+              <th>Action</th>
+              <th>Module</th>
+              <th>IP Address</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 09:42:11</td>
+              <td><i class="fa-solid fa-circle-user me-2" style="color:var(--orange);"></i>admin@pravaah</td>
+              <td><span class="bdg bdg-orange">Admin</span></td>
+              <td>User role updated</td>
+              <td>User Management</td>
+              <td style="font-family:monospace;font-size:0.8rem;">192.168.1.12</td>
+              <td><span class="bdg bdg-green">Success</span></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 09:38:55</td>
+              <td><i class="fa-solid fa-circle-user me-2" style="color:#888;"></i>rsingh@pravaah</td>
+              <td><span class="bdg bdg-navy">Trainer</span></td>
+              <td>New student enrolled</td>
+              <td>Student Management</td>
+              <td style="font-family:monospace;font-size:0.8rem;">10.0.0.54</td>
+              <td><span class="bdg bdg-green">Success</span></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 09:31:02</td>
+              <td><i class="fa-solid fa-circle-user me-2" style="color:#888;"></i>pkumar@pravaah</td>
+              <td><span class="bdg bdg-navy">Trainer</span></td>
+              <td>Attendance marked</td>
+              <td>Course Management</td>
+              <td style="font-family:monospace;font-size:0.8rem;">10.0.0.61</td>
+              <td><span class="bdg bdg-green">Success</span></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 09:14:48</td>
+              <td><i class="fa-solid fa-circle-user me-2" style="color:#888;"></i>mverma@pravaah</td>
+              <td><span class="bdg bdg-black">Staff</span></td>
+              <td>Login failed (3 attempts)</td>
+              <td>Auth Service</td>
+              <td style="font-family:monospace;font-size:0.8rem;">203.94.12.7</td>
+              <td><span class="bdg bdg-red">Failed</span></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 08:40:15</td>
+              <td><i class="fa-solid fa-circle-user me-2" style="color:#888;"></i>ssharma@pravaah</td>
+              <td><span class="bdg bdg-navy">Trainer</span></td>
+              <td>Certificate issued</td>
+              <td>Course Management</td>
+              <td style="font-family:monospace;font-size:0.8rem;">10.0.0.78</td>
+              <td><span class="bdg bdg-green">Success</span></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 07:58:44</td>
+              <td><i class="fa-solid fa-circle-user me-2" style="color:#888;"></i>hpatel@pravaah</td>
+              <td><span class="bdg bdg-black">Staff</span></td>
+              <td>Hostel room allocated</td>
+              <td>Hostel Management</td>
+              <td style="font-family:monospace;font-size:0.8rem;">10.0.0.33</td>
+              <td><span class="bdg bdg-green">Success</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RECENT ACTIVITY ══ -->
+  <div class="sec-label">
+    <div class="sec-label-dot"></div>
+    <div class="sec-label-text">Recent Activity</div>
+    <div class="sec-label-line"></div>
+  </div>
+
+  <div class="pravaah-card mb-5">
+    <div class="activity-row">
+      <div class="activity-icon-box" style="background:#fff3cd;color:#856404;border-color:#e6c200">
+        <i class="fa-solid fa-bell"></i>
+      </div>
+      <div style="flex:1">
+        <div class="activity-text">Exam schedule sent to students</div>
+        <div class="activity-time">5 minutes ago</div>
+      </div>
+      <span class="bdg" style="border-color:#e6a817;color:#856404;background:#fff3cd">Notification</span>
+    </div>
+    <div class="activity-row">
+      <div class="activity-icon-box" style="background:#f5f5f0;color:var(--black);border-color:var(--black)">
+        <i class="fa-solid fa-file-chart-column"></i>
+      </div>
+      <div style="flex:1">
+        <div class="activity-text">Monthly report generated successfully</div>
+        <div class="activity-time">1 hour ago</div>
+      </div>
+      <span class="bdg bdg-black">Report</span>
+    </div>
+    <div class="activity-row">
+      <div class="activity-icon-box" style="background:#fff5f0;color:var(--orange);border-color:var(--orange)">
+        <i class="fa-solid fa-plug"></i>
+      </div>
+      <div style="flex:1">
+        <div class="activity-text">API integration health check passed</div>
+        <div class="activity-time">3 hours ago</div>
+      </div>
+      <span class="bdg bdg-orange">Integration</span>
+    </div>
+  </div>
+
+</div><!-- /page-body -->
+
+<!-- Footer -->
+<footer class="p-footer">
+  <div class="footer-brand">PRAVA<span>AH</span> ERP</div>
+  <div class="footer-links">
+    <a href="#">Audit Logs</a>
+    <a href="#">Reports</a>
+    <a href="#">Profile</a>
+    <span style="color:rgba(255,255,255,0.2);font-size:0.7rem;margin-left:1.2rem;">© 2026 L&amp;T Training Programme</span>
+  </div>
+</footer>
+
+</div><!-- /page-wrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Mobile sidebar toggle
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const mainSidebar = document.getElementById('mainSidebar');
+  if (sidebarToggle && mainSidebar) {
+    sidebarToggle.addEventListener('click', () => {
+      mainSidebar.classList.toggle('mobile-show');
+    });
+  }
+
+  Chart.defaults.font.family = "'Inter', sans-serif";
+  Chart.defaults.font.size   = 11;
+  Chart.defaults.color       = '#888';
+  Chart.defaults.animation.duration = 850;
+  Chart.defaults.animation.easing   = 'easeInOutQuart';
+
+  const ORANGE  = '#ff5c1a';
+  const BLACK   = '#0a0a0a';
+  const GREEN   = '#22c55e';
+  const NAVY    = '#0f1e45';
+
+  // ── Stat Cards Duration Data ──────────────────────────
+  const statData = {
+    monthly: {
+      students: "4,820",
+      trainers: "128",
+      activeTrainees: "2,310",
+      activeTrainers: "94",
+      clients: "37",
+      courses: "56",
+      rooms: "340",
+      certificates: "1,640",
+      notifications: "3,250",
+      storageText: "1.84 TB of 3 TB used",
+      storagePercentage: "61%",
+      storageDocs: "620 GB",
+      storageMedia: "840 GB",
+      storageBackups: "380 GB",
+      storageFree: "1.16 TB",
+      workflowTrendBadge: "Weekly"
+    },
+    quarterly: {
+      students: "14,460",
+      trainers: "135",
+      activeTrainees: "6,930",
+      activeTrainers: "112",
+      clients: "45",
+      courses: "58",
+      rooms: "355",
+      certificates: "4,920",
+      notifications: "9,750",
+      storageText: "2.12 TB of 3 TB used",
+      storagePercentage: "70%",
+      storageDocs: "710 GB",
+      storageMedia: "960 GB",
+      storageBackups: "450 GB",
+      storageFree: "0.88 TB",
+      workflowTrendBadge: "Monthly"
+    },
+    financial_year: {
+      students: "57,840",
+      trainers: "150",
+      activeTrainees: "27,720",
+      activeTrainers: "130",
+      clients: "78",
+      courses: "64",
+      rooms: "380",
+      certificates: "19,680",
+      notifications: "39,000",
+      storageText: "2.55 TB of 3 TB used",
+      storagePercentage: "85%",
+      storageDocs: "850 GB",
+      storageMedia: "1.20 TB",
+      storageBackups: "500 GB",
+      storageFree: "0.45 TB",
+      workflowTrendBadge: "Yearly"
+    }
+  };
+
+  // ── Chart Update References ──────────────────────────
+  let barChartInstance;
+  let areaChartInstance;
+  let trainingChartInstance;
+  let programChartInstance;
+
+  // Chart data configurations for different periods
+  const chartDataConfig = {
+    monthly: {
+      bar: [95, 88, 76, 65, 92, 98],
+      area: [350, 550, 850, 1200],
+      impactDurations: [120, 80, 95, 150, 60, 45, 75],
+      impactParticipants: [320, 210, 280, 410, 180, 390, 250],
+      programDistribution: [320, 210, 280, 410, 180, 390, 250]
+    },
+    quarterly: {
+      bar: [98, 92, 85, 78, 95, 99],
+      area: [1050, 1650, 2550, 3600],
+      impactDurations: [360, 240, 285, 450, 180, 135, 225],
+      impactParticipants: [960, 630, 840, 1230, 540, 1170, 750],
+      programDistribution: [960, 630, 840, 1230, 540, 1170, 750]
+    },
+    financial_year: {
+      bar: [99, 95, 91, 84, 98, 100],
+      area: [4200, 6600, 10200, 14400],
+      impactDurations: [1440, 960, 1140, 1800, 720, 540, 900],
+      impactParticipants: [3840, 2520, 3360, 4920, 2160, 4680, 3000],
+      programDistribution: [3840, 2520, 3360, 4920, 2160, 4680, 3000]
+    }
+  };
+
+  // ── STATS DURATION SWITCHING CONTROLLER ──
+  const durationSelect = document.getElementById('durationSelect');
+
+  function updateDashboardData(period) {
+    const data = statData[period];
+    if (!data) return;
+
+    // Pulse effect animation helper
+    const animateStatChange = (id, newValue) => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.classList.remove('pulse-active');
+        // trigger reflow
+        void element.offsetWidth;
+        element.textContent = newValue;
+        element.classList.add('pulse-active');
+      }
+    };
+
+    // Update remaining counters
+    animateStatChange('stat-total-students', data.students);
+    animateStatChange('stat-master-trainers', data.trainers);
+    animateStatChange('stat-active-trainees', data.activeTrainees);
+    animateStatChange('stat-active-master-trainers', data.activeTrainers);
+    animateStatChange('stat-total-clients', data.clients);
+    animateStatChange('stat-courses-offered', data.courses);
+    animateStatChange('stat-occupied-rooms', data.rooms);
+    animateStatChange('stat-certificates-issued', data.certificates);
+    animateStatChange('stat-notifications', data.notifications);
+
+    // Update storage card
+    const barElem = document.getElementById('storage-bar-fill-elem');
+    if (barElem) barElem.style.width = data.storagePercentage;
+    const badgeElem = document.getElementById('storage-percentage-badge');
+    if (badgeElem) badgeElem.textContent = data.storagePercentage;
+    const detailElem = document.getElementById('storage-detail-text');
+    if (detailElem) detailElem.textContent = data.storageText;
+
+    document.getElementById('storage-docs-val').textContent = data.storageDocs;
+    document.getElementById('storage-media-val').textContent = data.storageMedia;
+    document.getElementById('storage-backups-val').textContent = data.storageBackups;
+    document.getElementById('storage-free-val').textContent = data.storageFree;
+
+    const wfTrendBdg = document.getElementById('workflowTrendBadge');
+    if (wfTrendBdg) wfTrendBdg.textContent = data.workflowTrendBadge;
+
+    // Update charts data dynamically
+    const cData = chartDataConfig[period];
+    if (cData) {
+      // 1. Module Usage Bar
+      if (barChartInstance) {
+        barChartInstance.data.datasets[0].data = cData.bar;
+        barChartInstance.update();
+      }
+      
+      // 2. Workflow Execution Trend Area
+      if (areaChartInstance) {
+        areaChartInstance.data.datasets[0].data = cData.area;
+        areaChartInstance.update();
+      }
+
+      // 3. Training Impact Chart
+      if (trainingChartInstance) {
+        trainingChartInstance.data.datasets[0].data = cData.impactDurations;
+        trainingChartInstance.data.datasets[1].data = cData.impactParticipants;
+        trainingChartInstance.update();
+      }
+
+      // 4. Participants by Program Pie
+      if (programChartInstance) {
+        programChartInstance.data.datasets[0].data = cData.programDistribution;
+        programChartInstance.update();
+      }
+    }
+  }
+
+  if (durationSelect) {
+    durationSelect.addEventListener('change', (e) => {
+      updateDashboardData(e.target.value);
+    });
+  }
+
+  // ── B) Bar Chart ───────────────────────────────
+  (function(){
+    const ctx = document.getElementById('barChart').getContext('2d');
+    const data = chartDataConfig.monthly.bar;
+    const colors = data.map(v =>
+      v >= 92 ? ORANGE : v >= 80 ? 'rgba(255,92,26,0.65)' : v >= 70 ? 'rgba(255,92,26,0.45)' : 'rgba(255,92,26,0.28)'
+    );
+    barChartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['User Mgmt','Student','Trainer','Hostel','Courses','Notif.'],
+        datasets: [{
+          label: 'Usage Score',
+          data,
+          backgroundColor: colors,
+          borderColor: BLACK, borderWidth: 1.5,
+          hoverBackgroundColor: ORANGE,
+          borderRadius: 0,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: BLACK, padding: 12, cornerRadius: 0,
+            callbacks: { label: c => `  Score: ${c.parsed.y}` }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, border: { color: BLACK, width: 2 } },
+          y: {
+            beginAtZero: true, max: 100,
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            border: { color: BLACK, width: 2 },
+            ticks: { callback: v => v + '%' }
+          }
+        }
+      }
+    });
+  })();
+
+  // ── D) Area Chart (Workflow Trend) ─────────────
+  (function(){
+    const ctx = document.getElementById('areaChart').getContext('2d');
+    const grad = ctx.createLinearGradient(0,0,0,260);
+    grad.addColorStop(0,   'rgba(10,10,10,0.18)');
+    grad.addColorStop(0.65,'rgba(10,10,10,0.05)');
+    grad.addColorStop(1,   'rgba(10,10,10,0.00)');
+    areaChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Week 1','Week 2','Week 3','Week 4'],
+        datasets: [{
+          label: 'Workflows',
+          data: chartDataConfig.monthly.area,
+          borderColor: BLACK, borderWidth: 2.5,
+          pointBackgroundColor: ORANGE, pointBorderColor: '#fff',
+          pointBorderWidth: 2, pointRadius: 6, pointHoverRadius: 9,
+          fill: true, backgroundColor: grad, tension: 0.48,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: BLACK, padding: 12, cornerRadius: 0,
+            callbacks: { label: c => `  ${c.parsed.y.toLocaleString()} executions` }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, border: { color: BLACK, width: 2 } },
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            border: { color: BLACK, width: 2 },
+            ticks: { callback: v => v.toLocaleString() }
+          }
+        }
+      }
+    });
+  })();
+
+  // ── E) Training Impact Bar Chart (Duration × Participants) ──
+  (function(){
+    const ctx = document.getElementById('trainingImpactChart').getContext('2d');
+    const programs = ['Civil Engg', 'Elec. Tech', 'Mech. Works', 'IT & Coding', 'Safety Mgmt', 'Soft Skills', 'Quality Ctrl'];
+    const durations = chartDataConfig.monthly.impactDurations;
+    const participants = chartDataConfig.monthly.impactParticipants;
+
+    const orangeShades = [
+      'rgba(255,92,26,1)',
+      'rgba(255,92,26,0.85)',
+      'rgba(255,92,26,0.70)',
+      'rgba(255,92,26,0.60)',
+      'rgba(255,92,26,0.50)',
+      'rgba(255,92,26,0.38)',
+      'rgba(255,92,26,0.28)',
+    ];
+
+    trainingChartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: programs,
+        datasets: [
+          {
+            label: 'Duration (hrs)',
+            data: durations,
+            backgroundColor: BLACK,
+            borderColor: BLACK,
+            borderWidth: 1.5,
+            borderRadius: 0,
+            yAxisID: 'y1',
+          },
+          {
+            label: 'Participants',
+            data: participants,
+            backgroundColor: orangeShades,
+            borderColor: ORANGE,
+            borderWidth: 1.5,
+            borderRadius: 0,
+            yAxisID: 'y',
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true, position: 'top',
+            labels: { padding: 16, font: { size: 10, weight: '700' }, color: BLACK }
+          },
+          tooltip: {
+            backgroundColor: BLACK, padding: 12, cornerRadius: 0,
+            callbacks: {
+              label: c => c.datasetIndex === 0
+                ? `  Duration: ${c.parsed.y} hrs`
+                : `  Participants: ${c.parsed.y}`
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, border: { color: BLACK, width: 2 } },
+          y: {
+            beginAtZero: true, position: 'left',
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            border: { color: BLACK, width: 2 },
+            title: { display: true, text: 'Participants', font: { weight: '700', size: 10 }, color: ORANGE },
+            ticks: { color: ORANGE }
+          },
+          y1: {
+            beginAtZero: true, position: 'right',
+            grid: { drawOnChartArea: false },
+            border: { color: BLACK, width: 2 },
+            title: { display: true, text: 'Duration (hrs)', font: { weight: '700', size: 10 }, color: BLACK },
+            ticks: { color: BLACK }
+          }
+        }
+      }
+    });
+  })();
+
+  // ── F) Participants by Program Doughnut ──────────
+  (function(){
+    const ctx = document.getElementById('programPieChart').getContext('2d');
+    programChartInstance = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Civil Engg','Elec. Tech','Mech. Works','IT & Coding','Safety Mgmt','Soft Skills','Quality Ctrl'],
+        datasets: [{
+          data: chartDataConfig.monthly.programDistribution,
+          backgroundColor: [
+            ORANGE, BLACK, NAVY,
+            '#555', '#888', '#aaa', '#ccc'
+          ],
+          borderColor: '#fff',
+          borderWidth: 3,
+          hoverOffset: 8,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { padding: 10, font: { size: 9, weight: '700' }, color: BLACK }
+          },
+          tooltip: {
+            backgroundColor: BLACK, padding: 12, cornerRadius: 0,
+            callbacks: { label: c => `  ${c.label}: ${c.parsed} participants` }
+          }
+        }
+      }
+    });
+  })();
+</script>
+</body>
+</html>
