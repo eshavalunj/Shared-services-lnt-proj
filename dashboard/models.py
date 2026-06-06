@@ -95,3 +95,41 @@ class Program(models.Model):
     class Meta:
         db_table = 'programs'
         managed = False
+
+
+class AuditLog(models.Model):
+    id = models.AutoField(primary_key=True)
+
+    action = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    module = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    ip_address = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True
+    )
+
+    browser_agent = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    timestamp = models.DateTimeField()
+
+    user_id = models.IntegerField(
+        blank=True,
+        null=True
+    )
+
+    class Meta:
+        db_table = 'audit_logs'
+        managed = False

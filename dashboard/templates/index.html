@@ -533,7 +533,7 @@
         <a href=""><i class="fa-solid fa-chart-bar"></i> Reports Hub</a>
       </div>
     </li>
-    <li><a href="#">Students <span class="nav-arrow"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem"></i></span></a></li>
+    <li><a href="#">Participants mgmt <span class="nav-arrow"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem"></i></span></a></li>
     <li><a href="#">Trainers <span class="nav-arrow"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem"></i></span></a></li>
     <li><a href="#">Courses <span class="nav-arrow"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem"></i></span></a></li>
     <li><a href="report.html">Reports <span class="nav-arrow"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem"></i></span></a></li>
@@ -563,7 +563,7 @@
 
   <div class="sb-section">
     <div class="sb-label">Modules</div>
-    <a href="#" class="sb-item"><i class="fa-solid fa-user-graduate"></i> Students</a>
+    <a href="#" class="sb-item"><i class="fa-solid fa-user-graduate"></i> Participants</a>
     <a href="#" class="sb-item"><i class="fa-solid fa-chalkboard-user"></i> Trainers</a>
     <a href="#" class="sb-item"><i class="fa-solid fa-book-open"></i> Courses</a>
     <a href="#" class="sb-item"><i class="fa-solid fa-building"></i> Hostel</a>
@@ -624,7 +624,7 @@
       <div class="stat-card s-black">
         <div class="sc-icon"><i class="fa-solid fa-user-graduate"></i></div>
         <div class="sc-num" id="stat-total-students">  {{ total_students }}</div>
-        <div class="sc-label">Total Students</div>
+        <div class="sc-label">Total Participants</div>
       </div>
     </div>
     <div class="col-6 col-md-3 col-xl">
@@ -726,7 +726,7 @@
       <div class="chart-card">
         <div class="chart-head">
           <div class="chart-head-title">
-            <i class="fa-solid fa-chart-column"></i> Module Usage Statistics
+            <i class="fa-solid fa-chart-column"></i> Client Courses Statistics
           </div>
           <span class="chart-head-badge">Score / 100</span>
         </div>
@@ -941,96 +941,127 @@
   </div>
 
   <!-- ══ AUDIT & LOGGING ══ -->
-  <div class="sec-label">
+<div class="sec-label">
     <div class="sec-label-dot"></div>
     <div class="sec-label-text">Audit &amp; Logging</div>
     <div class="sec-label-line"></div>
-  </div>
+</div>
 
-  <div class="chart-card mb-4">
+<div class="chart-card mb-4">
+
     <div class="chart-head">
-      <div class="chart-head-title">
-        <i class="fa-solid fa-clipboard-list"></i> Audit Log — Recent Events
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span class="chart-head-badge">Live</span>
-        <a href="#" style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 12px;border:1.5px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)';this.style.color='rgba(255,255,255,0.7)'">Export Logs</a>
-      </div>
+        <div class="chart-head-title">
+            <i class="fa-solid fa-clipboard-list"></i>
+            Audit Log — Recent Events
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;">
+            <span class="chart-head-badge">LIVE</span>
+
+            <a href="#"
+               style="font-size:0.65rem;
+                      font-weight:800;
+                      text-transform:uppercase;
+                      letter-spacing:1.5px;
+                      padding:3px 12px;
+                      border:1.5px solid rgba(255,255,255,0.3);
+                      color:rgba(255,255,255,0.7);
+                      text-decoration:none;
+                      transition:all .15s;"
+               onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'"
+               onmouseout="this.style.borderColor='rgba(255,255,255,0.3)';this.style.color='rgba(255,255,255,0.7)'">
+                EXPORT LOGS
+            </a>
+        </div>
     </div>
+
     <div class="chart-body" style="padding:0;">
-      <div class="p-table-wrap" style="border:none;">
-        <table class="p-table">
-          <thead>
-            <tr>
-              <th style="width:160px;">Timestamp</th>
-              <th>User</th>
-              <th>Role</th>
-              <th>Action</th>
-              <th>Module</th>
-              <th>IP Address</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 09:42:11</td>
-              <td><i class="fa-solid fa-circle-user me-2" style="color:var(--orange);"></i>admin@pravaah</td>
-              <td><span class="bdg bdg-orange">Admin</span></td>
-              <td>User role updated</td>
-              <td>User Management</td>
-              <td style="font-family:monospace;font-size:0.8rem;">192.168.1.12</td>
-              <td><span class="bdg bdg-green">Success</span></td>
-            </tr>
-            <tr>
-              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 09:38:55</td>
-              <td><i class="fa-solid fa-circle-user me-2" style="color:#888;"></i>rsingh@pravaah</td>
-              <td><span class="bdg bdg-navy">Trainer</span></td>
-              <td>New student enrolled</td>
-              <td>Student Management</td>
-              <td style="font-family:monospace;font-size:0.8rem;">10.0.0.54</td>
-              <td><span class="bdg bdg-green">Success</span></td>
-            </tr>
-            <tr>
-              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 09:31:02</td>
-              <td><i class="fa-solid fa-circle-user me-2" style="color:#888;"></i>pkumar@pravaah</td>
-              <td><span class="bdg bdg-navy">Trainer</span></td>
-              <td>Attendance marked</td>
-              <td>Course Management</td>
-              <td style="font-family:monospace;font-size:0.8rem;">10.0.0.61</td>
-              <td><span class="bdg bdg-green">Success</span></td>
-            </tr>
-            <tr>
-              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 09:14:48</td>
-              <td><i class="fa-solid fa-circle-user me-2" style="color:#888;"></i>mverma@pravaah</td>
-              <td><span class="bdg bdg-black">Staff</span></td>
-              <td>Login failed (3 attempts)</td>
-              <td>Auth Service</td>
-              <td style="font-family:monospace;font-size:0.8rem;">203.94.12.7</td>
-              <td><span class="bdg bdg-red">Failed</span></td>
-            </tr>
-            <tr>
-              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 08:40:15</td>
-              <td><i class="fa-solid fa-circle-user me-2" style="color:#888;"></i>ssharma@pravaah</td>
-              <td><span class="bdg bdg-navy">Trainer</span></td>
-              <td>Certificate issued</td>
-              <td>Course Management</td>
-              <td style="font-family:monospace;font-size:0.8rem;">10.0.0.78</td>
-              <td><span class="bdg bdg-green">Success</span></td>
-            </tr>
-            <tr>
-              <td style="font-family:monospace;font-size:0.8rem;color:#888;">2026-06-04 07:58:44</td>
-              <td><i class="fa-solid fa-circle-user me-2" style="color:#888;"></i>hpatel@pravaah</td>
-              <td><span class="bdg bdg-black">Staff</span></td>
-              <td>Hostel room allocated</td>
-              <td>Hostel Management</td>
-              <td style="font-family:monospace;font-size:0.8rem;">10.0.0.33</td>
-              <td><span class="bdg bdg-green">Success</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+
+        <div class="p-table-wrap" style="border:none;">
+
+            <table class="p-table">
+
+                <thead>
+                    <tr>
+                        <th style="width:180px;">Timestamp</th>
+                        <th>User</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                        <th>Module</th>
+                        <th>IP Address</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for log in audit_logs %}
+
+                    <tr>
+
+                        <td style="font-family:monospace;font-size:0.8rem;color:#888;">
+                            {{ log.timestamp|date:"Y-m-d H:i:s" }}
+                        </td>
+
+                        <td>
+                            <i class="fa-solid fa-circle-user me-2"
+                               style="color:var(--orange);"></i>
+
+                            {% if log.user_id %}
+                                User {{ log.user_id }}
+                            {% else %}
+                                Anonymous
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if log.user_id == 1 %}
+                                <span class="bdg bdg-orange">ADMIN</span>
+                            {% else %}
+                                <span class="bdg bdg-navy">USER</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ log.action }}</td>
+
+                        <td>{{ log.module }}</td>
+
+                        <td style="font-family:monospace;font-size:0.8rem;">
+                            {{ log.ip_address }}
+                        </td>
+
+                        <td>
+                            {% if 'Failed' in log.action %}
+                                <span class="bdg bdg-red">FAILED</span>
+                            {% else %}
+                                <span class="bdg bdg-green">SUCCESS</span>
+                            {% endif %}
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="7"
+                            style="text-align:center;
+                                   padding:25px;
+                                   font-weight:700;">
+                            No Audit Logs Found
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
     </div>
-  </div>
+
+</div>
 
   <!-- ══ RECENT ACTIVITY ══ -->
   <div class="sec-label">

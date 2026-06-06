@@ -10,7 +10,8 @@ from .models import (
     Room,
     Certificate,
     Notification,
-    Program
+    Program,
+    AuditLog
 )
 
 
@@ -107,7 +108,7 @@ def home(request):
     # ====================================
     # CONTEXT
     # ====================================
-
+    audit_logs = AuditLog.objects.order_by('-timestamp')[:10]
     context = {
 
         # KPI Cards
@@ -135,6 +136,7 @@ def home(request):
 
         # Program Details
         'program_details': program_details,
+        'audit_logs': audit_logs,
     }
 
     return render(request, 'index.html', context)
